@@ -1,0 +1,261 @@
+{
+    "widgets": [
+        {
+            "height": 6,
+            "width": 24,
+            "y": 0,
+            "x": 0,
+            "type": "text",
+            "properties": {
+                "markdown": "# 🔧 Gunicorn Worker Monitoring Dashboard\n\nMonitor worker utilization patterns under different load levels.\n\n| Setting | Value |\n|---------|-------|\n| Namespace | `GunicornWorkers` |\n| Workers | Configurable via `GUNICORN_WORKERS` env var |\n| Refresh | Auto-refresh every 10s |"
+            }
+        },
+        {
+            "height": 8,
+            "width": 12,
+            "y": 6,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [
+                        "GunicornWorkers",
+                        "ActiveWorkers",
+                        "InstanceId",
+                        "docker-local",
+                        {
+                            "stat": "Average",
+                            "color": "#2ca02c"
+                        }
+                    ],
+                    [
+                        "GunicornWorkers",
+                        "IdleWorkers",
+                        "InstanceId",
+                        "docker-local",
+                        {
+                            "stat": "Average",
+                            "color": "#d62728"
+                        }
+                    ],
+                    [
+                        "GunicornWorkers",
+                        "TotalWorkersSeen",
+                        "InstanceId",
+                        "docker-local",
+                        {
+                            "stat": "Maximum",
+                            "color": "#1f77b4"
+                        }
+                    ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "ap-south-1",
+                "title": "📊 Active vs Idle Workers Over Time",
+                "period": 10,
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "label": "Worker Count"
+                    }
+                }
+            }
+        },
+        {
+            "height": 8,
+            "width": 12,
+            "y": 6,
+            "x": 12,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [
+                        "GunicornWorkers",
+                        "WorkerUtilization",
+                        "InstanceId",
+                        "docker-local",
+                        {
+                            "stat": "Average",
+                            "color": "#ff7f0e"
+                        }
+                    ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "ap-south-1",
+                "title": "⚡ Worker Utilization %",
+                "period": 10,
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "max": 100,
+                        "label": "Utilization %"
+                    }
+                },
+                "annotations": {
+                    "horizontal": [
+                        {
+                            "label": "50% (Half Load Target)",
+                            "value": 50,
+                            "color": "#ff9800"
+                        },
+                        {
+                            "label": "100% (Full Load Target)",
+                            "value": 100,
+                            "color": "#f44336"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "height": 8,
+            "width": 12,
+            "y": 14,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [
+                        "GunicornWorkers",
+                        "TotalRequests",
+                        "InstanceId",
+                        "docker-local",
+                        {
+                            "stat": "Maximum",
+                            "color": "#9467bd"
+                        }
+                    ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "ap-south-1",
+                "title": "📈 Total Requests Processed",
+                "period": 10,
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "label": "Request Count"
+                    }
+                }
+            }
+        },
+        {
+            "height": 8,
+            "width": 12,
+            "y": 14,
+            "x": 12,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [
+                        "GunicornWorkers",
+                        "AvgResponseTime",
+                        "InstanceId",
+                        "docker-local",
+                        {
+                            "stat": "Average",
+                            "color": "#e377c2"
+                        }
+                    ]
+                ],
+                "view": "timeSeries",
+                "stacked": false,
+                "region": "ap-south-1",
+                "title": "⏱️ Average Response Time",
+                "period": 10,
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "label": "Seconds"
+                    }
+                }
+            }
+        },
+        {
+            "height": 6,
+            "width": 8,
+            "y": 22,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [
+                        "GunicornWorkers",
+                        "ActiveWorkers",
+                        "InstanceId",
+                        "docker-local",
+                        {
+                            "stat": "Average"
+                        }
+                    ]
+                ],
+                "view": "gauge",
+                "region": "ap-south-1",
+                "title": "🟢 Active Workers (Gauge)",
+                "period": 10,
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            }
+        },
+        {
+            "height": 6,
+            "width": 8,
+            "y": 22,
+            "x": 8,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [
+                        "GunicornWorkers",
+                        "WorkerUtilization",
+                        "InstanceId",
+                        "docker-local",
+                        {
+                            "stat": "Average"
+                        }
+                    ]
+                ],
+                "view": "gauge",
+                "region": "ap-south-1",
+                "title": "⚡ Utilization % (Gauge)",
+                "period": 10,
+                "yAxis": {
+                    "left": {
+                        "min": 0,
+                        "max": 100
+                    }
+                }
+            }
+        },
+        {
+            "height": 6,
+            "width": 8,
+            "y": 22,
+            "x": 16,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [
+                        "GunicornWorkers",
+                        "AvgResponseTime",
+                        "InstanceId",
+                        "docker-local",
+                        {
+                            "stat": "Average"
+                        }
+                    ]
+                ],
+                "view": "singleValue",
+                "region": "ap-south-1",
+                "title": "⏱️ Avg Response Time (Current)",
+                "period": 10
+            }
+        }
+    ]
+}

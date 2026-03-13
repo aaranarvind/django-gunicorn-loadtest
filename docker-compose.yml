@@ -1,0 +1,94 @@
+version: "3.9"
+
+services:
+  # ---- Django + Gunicorn Web Server ----
+  web:
+    build: .
+    container_name: gunicorn-web
+    ports:
+      - "8000:8000"
+    environment:
+      # Gunicorn settings — CHANGE THESE to test different worker counts
+      - GUNICORN_WORKERS=${GUNICORN_WORKERS:-5}
+      - GUNICORN_THREADS=${GUNICORN_THREADS:-1}
+      - GUNICORN_BIND=0.0.0.0:8000
+
+      # CloudWatch settings
+      - CLOUDWATCH_ENABLED=${CLOUDWATCH_ENABLED:-True}
+      - CW_NAMESPACE=${CW_NAMESPACE:-GunicornWorkers}
+      - CW_PUSH_INTERVAL=${CW_PUSH_INTERVAL:-10}
+      - INSTANCE_ID=${INSTANCE_ID:-docker-local}
+
+      # AWS credentials (pass from host)
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-ap-south-1}
+    volumes:
+      - ./results:/app/results
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+  # ---- Locust Load Tester ----
+  locust:
+    build: .
+    container_name: locust-loadtester
+    command: >
+      locust -f /app/loadtest/locustfile.py
+      --host http://web:8000
+      --web-host 0.0.0.0
+    ports:
+      - "8089:8089"    # Locust web UI
+    depends_on:
+      web:
+        condition: service_healthy
+    volumes:
+      - ./results:/app/results
+    profiles:
+      - loadtest
+
+  # ---- Locust Full Load (headless) ----
+  locust-full:
+    build: .
+    container_name: locust-full-load
+    command: >
+      locust -f /app/loadtest/locustfile.py
+      --host http://web:8000
+      --users 100
+      --spawn-rate 10
+      --run-time 5m
+      --headless
+      --csv /app/results/full_load
+      --html /app/results/full_load_report.html
+    depends_on:
+      web:
+        condition: service_healthy
+    volumes:
+      - ./results:/app/results
+    profiles:
+      - fullload
+
+  # ---- Locust Half Load (headless) ----
+  locust-half:
+    build: .
+    container_name: locust-half-load
+    command: >
+      locust -f /app/loadtest/locustfile.py
+      --host http://web:8000
+      --users 50
+      --spawn-rate 5
+      --run-time 5m
+      --headless
+      --csv /app/results/half_load
+      --html /app/results/half_load_report.html
+    depends_on:
+      web:
+        condition: service_healthy
+    volumes:
+      - ./results:/app/results
+    profiles:
+      - halfload
