@@ -13,7 +13,7 @@
             "Resource": "*",
             "Condition": {
                 "StringEquals": {
-                    "cloudwatch:namespace": "GunicornWorkers"
+                    "cloudwatch:namespace": "UWSGIWorkers"
                 }
             }
         },
@@ -26,7 +26,7 @@
                 "cloudwatch:ListDashboards",
                 "cloudwatch:DeleteDashboards"
             ],
-            "Resource": "arn:aws:cloudwatch::*:dashboard/GunicornWorkerMonitoring"
+            "Resource": "arn:aws:cloudwatch::*:dashboard/UWSGIWorkerMonitoring"
         }
     ]
 }

@@ -1,6 +1,6 @@
 """
 Views for the mock Django application.
-Each endpoint simulates a different type of workload to stress Gunicorn workers.
+Each endpoint simulates a different type of workload to stress uWSGI workers.
 """
 import hashlib
 import json
@@ -11,7 +11,7 @@ import time
 
 from django.http import JsonResponse
 
-from metrics.gunicorn_stats import WorkerTracker
+from metrics.uwsgi_stats import WorkerTracker
 
 # Global worker tracker instance
 tracker = WorkerTracker()

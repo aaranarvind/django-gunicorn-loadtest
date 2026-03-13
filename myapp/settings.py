@@ -61,7 +61,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ---------- CloudWatch Configuration ----------
-AWS_CLOUDWATCH_NAMESPACE = os.environ.get('CW_NAMESPACE', 'GunicornWorkers')
+AWS_CLOUDWATCH_NAMESPACE = os.environ.get('CW_NAMESPACE', 'UWSGIWorkers')
 AWS_REGION = os.environ.get('AWS_DEFAULT_REGION', 'ap-south-1')
 CLOUDWATCH_ENABLED = os.environ.get('CLOUDWATCH_ENABLED', 'True').lower() in ('true', '1', 'yes')
 CLOUDWATCH_PUSH_INTERVAL = int(os.environ.get('CW_PUSH_INTERVAL', '10'))  # seconds

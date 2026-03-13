@@ -1,11 +1,11 @@
-# Django + Gunicorn Load Testing & CloudWatch Worker Monitoring
+# Django + uWSGI Load Testing & CloudWatch Worker Monitoring
 
-A complete setup to observe **Gunicorn worker utilization patterns** under different loads, with metrics pushed to **AWS CloudWatch**.
+A complete setup to observe **uWSGI worker utilization patterns** under different loads, with metrics pushed to **AWS CloudWatch**.
 
 ## 🎯 What This Does
 
 - **Mock Django App** with CPU-heavy, IO-heavy, and mixed workload endpoints
-- **Gunicorn** WSGI server with configurable workers/threads
+- **uWSGI** WSGI server with configurable processes/threads
 - **CloudWatch custom metrics** — per-worker utilization, request counts, response times
 - **Locust load testing** — full load (100 users) and half load (50 users)
 - **Pre-built CloudWatch dashboard** to visualize worker patterns
@@ -27,7 +27,7 @@ cp .env.example .env
 ### 3. Start the App
 
 ```bash
-# Start with 5 Gunicorn workers (default)
+# Start with 5 uWSGI processes (default)
 docker-compose up --build -d web
 
 # Verify it's running
@@ -38,7 +38,7 @@ curl http://localhost:8000/api/health/
 
 ```bash
 aws cloudwatch put-dashboard \
-  --dashboard-name GunicornWorkerMonitoring \
+  --dashboard-name UWSGIWorkerMonitoring \
   --dashboard-body file://deploy/cloudwatch_dashboard.json \
   --region ap-south-1
 ```
@@ -60,23 +60,23 @@ docker-compose --profile fullload up locust-full
 
 ### The Experiment
 
-| Scenario | Workers | Load | Expected Observation |
-|----------|---------|------|---------------------|
+| Scenario | Processes | Load | Expected Observation |
+|----------|-----------|------|---------------------|
 | Baseline | 5 | None | 0 active, 5 idle |
 | Half Load | 5 | 50 users | 2-3 active, showing uneven distribution |
 | Full Load | 5 | 100 users | All 5 active, near 100% utilization |
 | Scale Up | 10 | 100 users | Workers spread out, lower per-worker utilization |
 
-### Changing Worker Count
+### Changing Process Count
 
 ```bash
 # Stop the app
 docker-compose down
 
-# Restart with different worker count
-GUNICORN_WORKERS=1 docker-compose up --build -d web
-GUNICORN_WORKERS=3 docker-compose up --build -d web
-GUNICORN_WORKERS=10 docker-compose up --build -d web
+# Restart with different process count
+UWSGI_PROCESSES=1 docker-compose up --build -d web
+UWSGI_PROCESSES=3 docker-compose up --build -d web
+UWSGI_PROCESSES=10 docker-compose up --build -d web
 ```
 
 ### What to Look for in CloudWatch
@@ -100,9 +100,9 @@ GUNICORN_WORKERS=10 docker-compose up --build -d web
 
 | Environment Variable | Default | Description |
 |---------------------|---------|-------------|
-| `GUNICORN_WORKERS` | `5` | Number of worker processes |
-| `GUNICORN_THREADS` | `1` | Threads per worker |
-| `CW_NAMESPACE` | `GunicornWorkers` | CloudWatch namespace |
+| `UWSGI_PROCESSES` | `5` | Number of worker processes |
+| `UWSGI_THREADS` | `1` | Threads per worker |
+| `CW_NAMESPACE` | `UWSGIWorkers` | CloudWatch namespace |
 | `CW_PUSH_INTERVAL` | `10` | Seconds between metric pushes |
 | `AWS_DEFAULT_REGION` | `ap-south-1` | AWS region |
 | `INSTANCE_ID` | `docker-local` | CloudWatch dimension value |
@@ -117,8 +117,8 @@ GUNICORN_WORKERS=10 docker-compose up --build -d web
                     └──────────┬──────────┘
                                │ HTTP
                     ┌──────────▼──────────┐
-                    │   Gunicorn Master    │
-                    │   (process manager)  │
+                    │    uWSGI Master      │
+                    │  (process manager)   │
                     └──────────┬──────────┘
               ┌────────┬───────┼───────┬────────┐
               ▼        ▼       ▼       ▼        ▼
@@ -140,7 +140,7 @@ GUNICORN_WORKERS=10 docker-compose up --build -d web
 ## 📂 Project Structure
 
 ```
-django-gunicorn-loadtest/
+django-uwsgi-loadtest/
 ├── myapp/                    # Django application
 │   ├── settings.py           # Config with env var overrides
 │   ├── urls.py               # URL routing
@@ -148,7 +148,8 @@ django-gunicorn-loadtest/
 │   └── wsgi.py               # WSGI entry point
 ├── metrics/                  # CloudWatch metrics module
 │   ├── cloudwatch.py         # AWS CloudWatch publisher
-│   └── gunicorn_stats.py     # Worker activity tracker
+│   ├── uwsgi_stats.py       # Worker activity tracker
+│   └── uwsgi_hooks.py       # uWSGI post-fork hooks
 ├── loadtest/                 # Locust load tests
 │   ├── locustfile.py         # Test definitions
 │   ├── full_load.conf        # 100 users config
@@ -157,7 +158,7 @@ django-gunicorn-loadtest/
 │   ├── cloudwatch_dashboard.json
 │   ├── iam_policy.json
 │   └── userdata.sh           # EC2 bootstrap
-├── gunicorn.conf.py          # Gunicorn config + CW hooks
+├── uwsgi.ini                 # uWSGI config + stats server
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
@@ -172,6 +173,6 @@ Create an IAM policy using `deploy/iam_policy.json` and attach it to:
 
 ```bash
 aws iam create-policy \
-  --policy-name GunicornCloudWatchMetrics \
+  --policy-name UWSGICloudWatchMetrics \
   --policy-document file://deploy/iam_policy.json
 ```

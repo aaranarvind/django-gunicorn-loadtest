@@ -1,5 +1,5 @@
 """
-Locust load testing file for Gunicorn worker utilization testing.
+Locust load testing file for uWSGI worker utilization testing.
 
 Usage:
     # Full load test (saturate all workers):

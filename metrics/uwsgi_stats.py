@@ -1,5 +1,5 @@
 """
-Gunicorn worker statistics tracker.
+uWSGI worker statistics tracker.
 Collects per-worker request counts, active status, and response times.
 This data is consumed by the CloudWatch publisher.
 """
@@ -11,12 +11,12 @@ from collections import defaultdict
 
 import psutil
 
-logger = logging.getLogger('metrics.gunicorn_stats')
+logger = logging.getLogger('metrics.uwsgi_stats')
 
 
 class WorkerTracker:
     """
-    Thread-safe tracker for Gunicorn worker activity.
+    Thread-safe tracker for uWSGI worker activity.
     Each worker (identified by PID) records request start/end events.
     """
 

@@ -1,21 +1,21 @@
 version: "3.9"
 
 services:
-  # ---- Django + Gunicorn Web Server ----
+  # ---- Django + uWSGI Web Server ----
   web:
     build: .
-    container_name: gunicorn-web
+    container_name: uwsgi-web
     ports:
       - "8000:8000"
+      - "9191:9191"    # uWSGI stats server
     environment:
-      # Gunicorn settings — CHANGE THESE to test different worker counts
-      - GUNICORN_WORKERS=${GUNICORN_WORKERS:-5}
-      - GUNICORN_THREADS=${GUNICORN_THREADS:-1}
-      - GUNICORN_BIND=0.0.0.0:8000
+      # uWSGI settings — CHANGE THESE to test different worker counts
+      - UWSGI_PROCESSES=${UWSGI_PROCESSES:-5}
+      - UWSGI_THREADS=${UWSGI_THREADS:-1}
 
       # CloudWatch settings
       - CLOUDWATCH_ENABLED=${CLOUDWATCH_ENABLED:-True}
-      - CW_NAMESPACE=${CW_NAMESPACE:-GunicornWorkers}
+      - CW_NAMESPACE=${CW_NAMESPACE:-UWSGIWorkers}
       - CW_PUSH_INTERVAL=${CW_PUSH_INTERVAL:-10}
       - INSTANCE_ID=${INSTANCE_ID:-docker-local}
 

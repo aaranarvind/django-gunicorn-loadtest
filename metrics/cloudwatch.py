@@ -1,6 +1,6 @@
 """
 CloudWatch metrics publisher.
-Pushes Gunicorn worker utilization metrics to AWS CloudWatch
+Pushes uWSGI worker utilization metrics to AWS CloudWatch
 at a configurable interval using a background daemon thread.
 """
 import logging
@@ -11,7 +11,7 @@ import time
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
 
-from metrics.gunicorn_stats import WorkerTracker
+from metrics.uwsgi_stats import WorkerTracker
 
 logger = logging.getLogger('metrics.cloudwatch')
 
@@ -24,7 +24,7 @@ class CloudWatchPublisher:
 
     def __init__(
         self,
-        namespace: str = 'GunicornWorkers',
+        namespace: str = 'UWSGIWorkers',
         region: str = 'ap-south-1',
         interval: int = 10,
         instance_id: str = None,
@@ -198,7 +198,7 @@ class CloudWatchPublisher:
             )
 
 
-# Module-level publisher instance (initialized in gunicorn.conf.py hooks)
+# Module-level publisher instance (initialized in uwsgi_hooks.py)
 _publisher = None
 
 

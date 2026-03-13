@@ -7,7 +7,7 @@
             "x": 0,
             "type": "text",
             "properties": {
-                "markdown": "# 🔧 Gunicorn Worker Monitoring Dashboard\n\nMonitor worker utilization patterns under different load levels.\n\n| Setting | Value |\n|---------|-------|\n| Namespace | `GunicornWorkers` |\n| Workers | Configurable via `GUNICORN_WORKERS` env var |\n| Refresh | Auto-refresh every 10s |"
+                "markdown": "# 🔧 uWSGI Worker Monitoring Dashboard\n\nMonitor worker utilization patterns under different load levels.\n\n| Setting | Value |\n|---------|-------|\n| Namespace | `UWSGIWorkers` |\n| Processes | Configurable via `UWSGI_PROCESSES` env var |\n| Refresh | Auto-refresh every 10s |"
             }
         },
         {
@@ -19,7 +19,7 @@
             "properties": {
                 "metrics": [
                     [
-                        "GunicornWorkers",
+                        "UWSGIWorkers",
                         "ActiveWorkers",
                         "InstanceId",
                         "docker-local",
@@ -29,7 +29,7 @@
                         }
                     ],
                     [
-                        "GunicornWorkers",
+                        "UWSGIWorkers",
                         "IdleWorkers",
                         "InstanceId",
                         "docker-local",
@@ -39,7 +39,7 @@
                         }
                     ],
                     [
-                        "GunicornWorkers",
+                        "UWSGIWorkers",
                         "TotalWorkersSeen",
                         "InstanceId",
                         "docker-local",
@@ -71,7 +71,7 @@
             "properties": {
                 "metrics": [
                     [
-                        "GunicornWorkers",
+                        "UWSGIWorkers",
                         "WorkerUtilization",
                         "InstanceId",
                         "docker-local",
@@ -118,7 +118,7 @@
             "properties": {
                 "metrics": [
                     [
-                        "GunicornWorkers",
+                        "UWSGIWorkers",
                         "TotalRequests",
                         "InstanceId",
                         "docker-local",
@@ -150,7 +150,7 @@
             "properties": {
                 "metrics": [
                     [
-                        "GunicornWorkers",
+                        "UWSGIWorkers",
                         "AvgResponseTime",
                         "InstanceId",
                         "docker-local",
@@ -182,7 +182,7 @@
             "properties": {
                 "metrics": [
                     [
-                        "GunicornWorkers",
+                        "UWSGIWorkers",
                         "ActiveWorkers",
                         "InstanceId",
                         "docker-local",
@@ -212,7 +212,7 @@
             "properties": {
                 "metrics": [
                     [
-                        "GunicornWorkers",
+                        "UWSGIWorkers",
                         "WorkerUtilization",
                         "InstanceId",
                         "docker-local",
@@ -242,7 +242,7 @@
             "properties": {
                 "metrics": [
                     [
-                        "GunicornWorkers",
+                        "UWSGIWorkers",
                         "AvgResponseTime",
                         "InstanceId",
                         "docker-local",
