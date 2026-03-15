@@ -16,10 +16,10 @@ RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 # ---- Runtime Stage ----
 FROM python:3.11-slim
 
-# Install runtime dependencies for uWSGI
+# Install runtime dependencies (minimal)
+# Note: libpcre3 and libxml2 are optional - removed for compatibility
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpcre3 \
-    libxml2 \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Add non-root user
