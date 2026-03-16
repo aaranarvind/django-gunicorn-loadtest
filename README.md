@@ -107,6 +107,33 @@ UWSGI_PROCESSES=10 podman-compose up --build -d web
 2. **Worker Utilization %** — Gauge shows what percentage of defined workers are active
 3. **Response Time** — Watch it increase as workers become saturated
 4. **Per-Worker Metrics** — See if load is distributed evenly across workers
+
+### 📸 CloudWatch Dashboard Screenshots
+
+**Dashboard URL**: https://ap-south-1.console.aws.amazon.com/cloudwatch/home?region=ap-south-1#dashboards:name=UWSGIWorkerMonitoring
+
+*Expected Dashboard Widgets:*
+- Worker Utilization % (Gauge: 0-100%)
+- Active vs Idle Workers (Line Chart)
+- Total Requests (Counter)
+- Average Response Time (Line Chart)
+- Per-Worker CPU/Memory Usage (Bar Charts)
+
+*📷 Screenshots to be added:*
+- `screenshots/dashboard-overview.png` - Full dashboard view
+- `screenshots/worker-utilization.png` - Worker utilization during load test
+- `screenshots/metrics-detail.png` - Detailed metrics breakdown
+
+*📖 See [screenshots/README.md](screenshots/README.md) for detailed screenshot instructions*
+
+*To generate fresh data for screenshots:*
+```bash
+# Run a 30-second load test to populate metrics
+podman run --rm -p 8089:8089 localhost/django-gunicorn-loadtest_web:latest \
+  locust -f /app/loadtest/locustfile.py \
+  --host http://host.containers.internal:8000 \
+  --autostart --users 15 --spawn-rate 3 --run-time 30s
+```
 5. **Total Requests** — Cumulative request count across all workers
 
 ## 🔧 Key Technical Features
@@ -327,6 +354,9 @@ django-gunicorn-loadtest/
 │   ├── iam_policy.json            # CloudWatch permissions
 │   └── userdata.sh                # EC2 bootstrap script
 ├── results/                  # Load test results (generated)
+├── screenshots/             # CloudWatch dashboard screenshots
+│   ├── README.md            # Screenshot capture instructions
+│   └── .gitkeep             # Keeps directory in git
 ├── uwsgi.ini                 # uWSGI config + stats server
 ├── Dockerfile                # Multi-stage build with uWSGI
 ├── docker-compose.yml        # Podman-compatible compose

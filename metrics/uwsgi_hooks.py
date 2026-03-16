@@ -26,7 +26,10 @@ def _post_fork_handler():
     pid = os.getpid()
     logger.info("👷 uWSGI Worker spawned: PID=%d", pid)
 
-    try:
+    # Register this worker with the tracker
+    from metrics.uwsgi_stats import WorkerTracker
+    tracker = WorkerTracker()
+    tracker.register_worker(pid)
         from metrics.cloudwatch import get_publisher
 
         namespace = os.environ.get('CW_NAMESPACE', 'UWSGIWorkers')

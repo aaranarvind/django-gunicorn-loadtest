@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   # ---- Django + uWSGI Web Server ----
   web:
@@ -36,13 +34,10 @@ services:
   # ---- Locust Load Tester ----
   locust:
     build: .
-    container_name: locust-loadtester
     command: >
       locust -f /app/loadtest/locustfile.py
+      --config /app/loadtest/full_load.conf
       --host http://web:8000
-      --web-host 0.0.0.0
-    ports:
-      - "8089:8089"    # Locust web UI
     depends_on:
       web:
         condition: service_healthy

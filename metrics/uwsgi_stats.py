@@ -114,9 +114,23 @@ class WorkerTracker:
             # Save updated stats
             self._save_stats_to_file()
 
-            logger.debug("Worker %s: request started", pid)
+    def register_worker(self, pid: int):
+        """Register a worker PID without starting a request."""
+        with self._lock:
+            # Load latest stats from file
+            self._load_stats_from_file()
 
-    def record_request_end(self, pid: int, elapsed: float):
+            if pid not in self._workers:
+                self._workers[pid] = {
+                    'active': False,
+                    'request_count': 0,
+                    'total_response_time': 0.0,
+                    'last_request_time': 0,
+                    'current_request_start': None,
+                }
+                # Save updated stats
+                self._save_stats_to_file()
+                logger.debug("Worker %s registered", pid)
         """Mark a worker as idle and record the request duration."""
         with self._lock:
             # Load latest stats from file
